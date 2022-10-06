@@ -15,14 +15,14 @@ namespace la_mia_pizzeria_crud_mvc
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         [StringLength(100, ErrorMessage = "Il nome non può avere più di 100 caratteri")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio"), ]
         [MoreThanFiveWordsValidation]
 
         public string? Description { get; set; } = null;
         [Required(ErrorMessage = "Il campo è obbligatorio")]
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         [Range(1, 1000, ErrorMessage ="Il campo deve essere compreso tra 1 e 1000")]

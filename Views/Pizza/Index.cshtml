@@ -6,23 +6,27 @@
 }
 <div class="text-center mb-3">
     <h2 class="fw-bold">Menu da Davide</h2>
-        <a class="btn add-btn btn-outline-dark" asp-area="" asp-controller="Pizza" asp-action="Create">Aggiungi Pizza</a>
+    <a class="btn add-btn btn-outline-light" asp-area="" asp-controller="Pizza" asp-action="Create">Aggiungi Pizza</a>
 </div>
 
-<div class="text-center m-auto w-50 row row-cols-3">
+<div class="text-center m-auto row row-cols-1 row-cols-md-2 row-cols-lg-3">
 
     @if (Model.Count > 0)
     {
         @foreach (Pizza pizza in Model)
         {
-            <div class="pizza_menu col mb-3 fw-bold">
-                <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"><img class="mb-2" width="100" src="@pizza.Image" /></a>
-                <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"> @pizza.Name</a>
-                <a class="btn btn-primary d-block" href="@Url.Action("Update", "Pizza", new{id = pizza.PizzaId})">Modifica</a>
-                <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.PizzaId" method="post">
-                    @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger d-block">Elimina</button>
-                </form>
+            <div class="p-3">
+                <div class="pizza_menu card col mb-3 fw-bold p-2 ">
+                    <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"><img class="card-img-top" width="100" src="@pizza.Image" /></a>
+                    <div class="card-body">
+                        <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"> @pizza.Name</a>
+                        <a class="btn btn-primary btn-sm d-block mb-1" width="100" href="@Url.Action("Update", "Pizza", new{id = pizza.PizzaId})">Modifica</a>
+                        <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.PizzaId" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm d-block w-100">Elimina</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         }
     }
@@ -33,13 +37,3 @@
         </div>
     }
 </div>
-
-
-
-@section FooterSection{
-    <footer class="border-top footer text-white d-flex align-items-center">
-        <div class="container ">
-            &copy; 2022 - Pizzeria da Davide - <a class="text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-}
