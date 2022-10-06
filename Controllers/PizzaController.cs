@@ -81,7 +81,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             }
             else
             {
-                return View("Update");
+                return View("Update", pizzaToUpdate);
             }
         }
 
