@@ -112,7 +112,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
 
         }
 
-        [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {

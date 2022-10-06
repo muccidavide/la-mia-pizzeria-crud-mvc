@@ -19,6 +19,10 @@
                 <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"><img class="mb-2" width="100" src="@pizza.Image" /></a>
                 <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"> @pizza.Name</a>
                 <a class="btn btn-primary d-block" href="@Url.Action("Update", "Pizza", new{id = pizza.PizzaId})">Modifica</a>
+                <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.PizzaId" method="post">
+                    @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger d-block">Elimina</button>
+                </form>
             </div>
         }
     }
