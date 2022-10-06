@@ -1,0 +1,52 @@
+﻿@model Pizza
+
+@{
+    ViewData["Title"] = "Update";
+    Layout = "_MyLayout";
+}
+
+<div>
+    <div class="text-center">
+        <h2>Aggiungi una pizza:</h2>
+    </div>
+
+    <div class="container form-pizza">
+        <form asp-controller="Pizza" asp-action="Update" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <strong>Nome:</strong>
+                <input asp-for="Name" class="d-block w-100" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Descrizione:</strong>
+                <input asp-for="Description" class="d-block w-100" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <strong>Immagine </strong> <span>(fake img: "/img/img-6.jpeg"):</span>
+                <input asp-for="Image" class="d-block w-100" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <strong>Price:</strong>
+            <div class="input-group mb-3">
+
+                <span class="input-group-text">€</span>
+                <input asp-for="Price" type="text" class="form-control" aria-label="Amount (to the nearest Euro)">
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="text-end">
+                <input type="submit" class="btn btn-small btn-info" value="Salva">
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterSection{
+    <footer class="border-top footer text-white d-flex align-items-center">
+        <div class="container ">
+            &copy; 2022 - Pizzeria da Davide - <a class="text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+}

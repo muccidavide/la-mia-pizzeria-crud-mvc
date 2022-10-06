@@ -1,0 +1,41 @@
+﻿@model List<Pizza>;
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_MyLayout";
+}
+<div class="text-center mb-3">
+    <h2 class="fw-bold">Menu da Davide</h2>
+        <a class="btn add-btn btn-outline-dark" asp-area="" asp-controller="Pizza" asp-action="Create">Aggiungi Pizza</a>
+</div>
+
+<div class="text-center m-auto w-50 row row-cols-3">
+
+    @if (Model.Count > 0)
+    {
+        @foreach (Pizza pizza in Model)
+        {
+            <div class="pizza_menu col mb-3 fw-bold">
+                <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"><img class="mb-2" width="100" src="@pizza.Image" /></a>
+                <a href="@Url.Action("Details","Pizza",new {id = pizza.PizzaId})"> @pizza.Name</a>
+                <a class="btn btn-primary d-block" href="@Url.Action("Update", "Pizza", new{id = pizza.PizzaId})">Modifica</a>
+            </div>
+        }
+    }
+    else
+    {
+        <div>
+            <p colspan="4" scope="row"> Non ci sono pizze disponibili al momento! Ti tocca mangiare Tonno in scatola XD </p>
+        </div>
+    }
+</div>
+
+
+
+@section FooterSection{
+    <footer class="border-top footer text-white d-flex align-items-center">
+        <div class="container ">
+            &copy; 2022 - Pizzeria da Davide - <a class="text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+}
