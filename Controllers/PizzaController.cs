@@ -2,22 +2,26 @@
 using Microsoft.EntityFrameworkCore.Design;
 using la_mia_pizzeria_static.Data;
 using Microsoft.IdentityModel.Tokens;
+using la_mia_pizzeria_post.Models;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
     public class PizzaController : Controller
     {
         PizzaContext _db;
+        List<Category> Categories;
 
         public PizzaController()
         {
             this._db = new PizzaContext();
+            this.Categories = _db.Categories.ToList();
         }
 
         public IActionResult Create()
         {
-            return View("Create");
+            return View("Create", Categories);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Pizza formPizza)
@@ -39,22 +43,9 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpGet]
         public IActionResult Index()
         {
-
-            /// FAKE DB
-            //Pizza pizzaMargherita = new("margherita", "pizza margherita", "/img/img-1.jpg", 13.30f);
-            //Pizza pizzaNapoli = new("napoli", "pizza napoli", "/img/img-2.jpeg", 10.00f);
-            //Pizza pizzaBufala = new("bufala", "pizza bufala", "/img/img-3.jpeg", 15.50f);
-            //Pizza pizzaMarinara = new("marinara", "pizza marinara", "/img/img-4.jpg", 12.30f);
-            //Pizza pizzaQuattroFormaggi = new("quattro formaggi", "pizza quatro formaggi", "/img/img-5.jpeg", 13.00f);
-            //Pizza pizzaBianca = new("bianca", "pizza bianca", "/img/img-6.jpeg", 15.50f);
-            //Pizza pizzaOliveeAcciughe = new("olive e acciughe", "pizza olive e acciughe", "/img/img-7.jpeg", 12.30f);
-            //Pizza pizzaRadicchio = new("raddicchio", "pizza raddicchio", "/img/img-8.jpeg", 13.00f);
-            //Pizza pizzaGenovese = new("genovese", "pizza genovese", "/img/img-9.jpg", 15.50f);
-
             List<Pizza> myMenu = new List<Pizza>();
 
             myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).ToList<Pizza>();
@@ -70,6 +61,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
 
             return View("Show", pizza);
         }
+
         [HttpGet]
         public IActionResult Update(int id)
         {
