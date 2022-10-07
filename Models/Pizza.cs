@@ -27,9 +27,9 @@ namespace la_mia_pizzeria_crud_mvc
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         [Range(1, 1000, ErrorMessage = "Il campo deve essere compreso tra 1 e 1000")]
         public decimal Price { get; set; }
-
+        [Required(ErrorMessage = "Il campo è obbligatorio")]
         public int? CategoryId { get; set; }
-
+        [Required(ErrorMessage = "Il campo è obbligatorio")]
         public Category? Category { get; set; }  
 
 }

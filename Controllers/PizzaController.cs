@@ -4,6 +4,7 @@ using la_mia_pizzeria_static.Data;
 using Microsoft.IdentityModel.Tokens;
 using la_mia_pizzeria_post.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
@@ -33,6 +34,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             if (!ModelState.IsValid)
             {
+                formPizza.Categories = _categories;
                 return View("Create", formPizza);
             }
 
@@ -43,9 +45,18 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             pizzaToCreate.Price = formPizza.Pizza.Price;
             pizzaToCreate.CategoryId = formPizza.Pizza.CategoryId;
 
-            _db.Pizzas.Add(pizzaToCreate);
-            _db.SaveChanges();
+            try
+            {
+                _db.Pizzas.Add(pizzaToCreate);
+                _db.SaveChanges();
+            }
+            catch (SqlException ex)
+            {
+                ModelState.AddModelError("StoreDataExcetipn", ex.Message);
+                formPizza.Categories = _categories;
+                return View("Create", formPizza);
 
+            }
             return RedirectToAction("Index");
         }
 
@@ -54,7 +65,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             List<Pizza> myMenu = new List<Pizza>();
 
-            myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).Include(dbPizza => dbPizza.Category).ToList<Pizza>();
+            myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).Include("Category").ToList<Pizza>();
 
 
             return View("Index", myMenu);
@@ -73,7 +84,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         public IActionResult Update(int id)
         {
             Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
-            pizzasCategories.Pizza = pizzaToUpdate;
+
 
             if (pizzaToUpdate == null)
             {
@@ -81,16 +92,19 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             }
             else
             {
+                pizzasCategories.Pizza = pizzaToUpdate;
+
                 return View("Update", pizzasCategories);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id,PizzasCategories formPizza)
+        public IActionResult Update(int id, PizzasCategories formPizza)
         {
             if (!ModelState.IsValid)
             {
+                formPizza.Categories = _categories;
                 return View("Update", formPizza);
             }
 
@@ -107,8 +121,21 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
                 pizzaToUpdate.Image = formPizza.Pizza.Image;
                 pizzaToUpdate.Price = formPizza.Pizza.Price;
                 pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
-                _db.SaveChanges();
-                return RedirectToAction("Index");   
+
+                try
+                {
+                    _db.Pizzas.Add(pizzaToUpdate);
+                    _db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    ModelState.AddModelError("StoreDataExcetipn", ex.Message);
+                    formPizza.Categories = _categories;
+                    return View("Update", formPizza);
+
+                }
+
+                return RedirectToAction("Index");
             }
 
         }

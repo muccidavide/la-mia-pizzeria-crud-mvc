@@ -4,11 +4,14 @@
 @{
     ViewData["Title"] = "Update";
     Layout = "_MyLayout";
+    
 }
 
 <div>
+   
     <div class="text-center">
         <h2>Aggiorna pizza @Model.Pizza.Name:</h2>
+        @Html.ValidationSummary()
     </div>
 
     <div class="container form-pizza">
