@@ -1,4 +1,4 @@
-﻿@model Pizza
+﻿@model Pizza 
 
 @{
     ViewData["Title"] = $"Pizza {Model.Name}";
@@ -10,6 +10,7 @@
     <h2>@Model.Name</h2>
     <p>@Model.Description</p>
     <p>@Model.Price €</p>
+    <p>@Model.Category.Name </p>
 
 </div>
 

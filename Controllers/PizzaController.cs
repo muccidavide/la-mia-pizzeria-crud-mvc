@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using la_mia_pizzeria_static.Data;
 using Microsoft.IdentityModel.Tokens;
 using la_mia_pizzeria_post.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
@@ -16,7 +17,8 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             this._db = new PizzaContext();
             this._categories = _db.Categories.ToList();
-            this.pizzasCategories = new PizzasCategories(); 
+            this.pizzasCategories = new PizzasCategories();
+            pizzasCategories.Categories = _categories;
         }
 
         public IActionResult Create()
@@ -39,6 +41,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             pizzaToCreate.Description = formPizza.Pizza.Description;
             pizzaToCreate.Image = formPizza.Pizza.Image;
             pizzaToCreate.Price = formPizza.Pizza.Price;
+            pizzaToCreate.CategoryId = formPizza.Pizza.CategoryId;
 
             _db.Pizzas.Add(pizzaToCreate);
             _db.SaveChanges();
@@ -51,7 +54,8 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             List<Pizza> myMenu = new List<Pizza>();
 
-            myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).ToList<Pizza>();
+            myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).Include(dbPizza => dbPizza.Category).ToList<Pizza>();
+
 
             return View("Index", myMenu);
         }
@@ -60,7 +64,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             Pizza pizza;
 
-            pizza = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+            pizza = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).First();
 
             return View("Show", pizza);
         }
@@ -69,6 +73,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         public IActionResult Update(int id)
         {
             Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+            pizzasCategories.Pizza = pizzaToUpdate;
 
             if (pizzaToUpdate == null)
             {
@@ -76,13 +81,13 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             }
             else
             {
-                return View("Update", pizzaToUpdate);
+                return View("Update", pizzasCategories);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id,Pizza formPizza)
+        public IActionResult Update(int id,PizzasCategories formPizza)
         {
             if (!ModelState.IsValid)
             {
@@ -97,10 +102,11 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             }
             else
             {
-                pizzaToUpdate.Name = formPizza.Name;
-                pizzaToUpdate.Description = formPizza.Description;
-                pizzaToUpdate.Image = formPizza.Image;
-                pizzaToUpdate.Price = formPizza.Price;
+                pizzaToUpdate.Name = formPizza.Pizza.Name;
+                pizzaToUpdate.Description = formPizza.Pizza.Description;
+                pizzaToUpdate.Image = formPizza.Pizza.Image;
+                pizzaToUpdate.Price = formPizza.Pizza.Price;
+                pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
                 _db.SaveChanges();
                 return RedirectToAction("Index");   
             }
