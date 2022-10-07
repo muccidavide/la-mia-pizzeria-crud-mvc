@@ -9,22 +9,25 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
     public class PizzaController : Controller
     {
         PizzaContext _db;
-        List<Category> Categories;
+        List<Category> _categories;
+        PizzasCategories pizzasCategories;
 
         public PizzaController()
         {
             this._db = new PizzaContext();
-            this.Categories = _db.Categories.ToList();
+            this._categories = _db.Categories.ToList();
+            this.pizzasCategories = new PizzasCategories(); 
         }
 
         public IActionResult Create()
         {
-            return View("Create", Categories);
+            pizzasCategories.Categories = _categories;
+            return View("Create", pizzasCategories);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Pizza formPizza)
+        public IActionResult Create(PizzasCategories formPizza)
         {
             if (!ModelState.IsValid)
             {
@@ -32,10 +35,10 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             }
 
             Pizza pizzaToCreate = new Pizza();
-            pizzaToCreate.Name = formPizza.Name;
-            pizzaToCreate.Description = formPizza.Description;
-            pizzaToCreate.Image = formPizza.Image;
-            pizzaToCreate.Price = formPizza.Price;
+            pizzaToCreate.Name = formPizza.Pizza.Name;
+            pizzaToCreate.Description = formPizza.Pizza.Description;
+            pizzaToCreate.Image = formPizza.Pizza.Image;
+            pizzaToCreate.Price = formPizza.Pizza.Price;
 
             _db.Pizzas.Add(pizzaToCreate);
             _db.SaveChanges();
