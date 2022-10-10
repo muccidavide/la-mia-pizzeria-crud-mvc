@@ -9,7 +9,7 @@ namespace la_mia_pizzeria_crud_mvc
     {
         public Pizza()
         {
-
+            Ingredients = new List<Ingredient>();
         }
         public int PizzaId { get; private set; }
 
@@ -29,8 +29,12 @@ namespace la_mia_pizzeria_crud_mvc
         public decimal Price { get; set; }
         [Required(ErrorMessage = "Il campo è obbligatorio")]
         public int? CategoryId { get; set; }
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
-        public Category? Category { get; set; }  
+        public Category? Category { get; set; }
 
-}
+        public List<Ingredient>? Ingredients { get; set; }
+
+
+
+
+    }
 }

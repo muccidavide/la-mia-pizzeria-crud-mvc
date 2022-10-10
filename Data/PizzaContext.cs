@@ -10,9 +10,11 @@ namespace la_mia_pizzeria_static.Data
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Ingredient> Ingredients { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=experis-pizzeria;Integrated Security=True");
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=ex-pizza-store;Integrated Security=True");
         }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using la_mia_pizzeria_post.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
@@ -12,19 +14,25 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
     {
         PizzaContext _db;
         List<Category> _categories;
+        List<Ingredient> _ingredients;
         PizzasCategories pizzasCategories;
 
         public PizzaController()
         {
             this._db = new PizzaContext();
             this._categories = _db.Categories.ToList();
+            this._ingredients = _db.Ingredients.ToList();
             this.pizzasCategories = new PizzasCategories();
             pizzasCategories.Categories = _categories;
+            pizzasCategories.Ingredients = _ingredients;
         }
-
+        /*
+         CREATE
+         */
         public IActionResult Create()
         {
             pizzasCategories.Categories = _categories;
+            pizzasCategories.Ingredients = _ingredients;
             return View("Create", pizzasCategories);
         }
 
@@ -32,22 +40,19 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PizzasCategories formPizza)
         {
+
             if (!ModelState.IsValid)
             {
                 formPizza.Categories = _categories;
+                formPizza.Ingredients = _ingredients;
                 return View("Create", formPizza);
             }
 
-            Pizza pizzaToCreate = new Pizza();
-            pizzaToCreate.Name = formPizza.Pizza.Name;
-            pizzaToCreate.Description = formPizza.Pizza.Description;
-            pizzaToCreate.Image = formPizza.Pizza.Image;
-            pizzaToCreate.Price = formPizza.Pizza.Price;
-            pizzaToCreate.CategoryId = formPizza.Pizza.CategoryId;
+            formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
 
             try
             {
-                _db.Pizzas.Add(pizzaToCreate);
+                _db.Pizzas.Add(formPizza.Pizza);
                 _db.SaveChanges();
             }
             catch (SqlException ex)
@@ -60,6 +65,9 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return RedirectToAction("Index");
         }
 
+        /*
+         INDEX & DETAILS
+         */
         [HttpGet]
         public IActionResult Index()
         {
@@ -80,10 +88,13 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return View("Show", pizza);
         }
 
+        /*
+         UPDATE
+         */
         [HttpGet]
         public IActionResult Update(int id)
         {
-            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).Include(dbPizza => dbPizza.Ingredients).First();
 
 
             if (pizzaToUpdate == null)
@@ -105,10 +116,11 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             if (!ModelState.IsValid)
             {
                 formPizza.Categories = _categories;
+                formPizza.Ingredients = _ingredients;
                 return View("Update", formPizza);
             }
 
-            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include("Ingredients").First();
 
             if (pizzaToUpdate == null)
             {
@@ -121,16 +133,17 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
                 pizzaToUpdate.Image = formPizza.Pizza.Image;
                 pizzaToUpdate.Price = formPizza.Pizza.Price;
                 pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
+                pizzaToUpdate.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
 
                 try
                 {
-                    _db.Pizzas.Add(pizzaToUpdate);
                     _db.SaveChanges();
                 }
-                catch (SqlException ex)
+                catch (Exception ex)
                 {
                     ModelState.AddModelError("StoreDataExcetipn", ex.Message);
                     formPizza.Categories = _categories;
+                    formPizza.Ingredients = _ingredients;
                     return View("Update", formPizza);
 
                 }
@@ -140,6 +153,9 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
 
         }
 
+        /*
+         DELETE
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
