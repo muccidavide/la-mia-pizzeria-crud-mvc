@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Authorization;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
+    [Authorize]
     public class PizzaController : Controller
     {
         PizzaContext _db;
@@ -19,7 +21,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
 
         public PizzaController()
         {
-            this._db = new PizzaContext();
+            _db = new PizzaContext();
             this._categories = _db.Categories.ToList();
             this._ingredients = _db.Ingredients.ToList();
             this.pizzasCategories = new PizzasCategories();
